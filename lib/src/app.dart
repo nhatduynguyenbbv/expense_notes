@@ -13,15 +13,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        onGenerateRoute: (RouteSettings routeSettings) {
-          return MaterialPageRoute<void>(
-              settings: routeSettings,
-              builder: (BuildContext context) {
-                switch (routeSettings.name) {
-                  default:
-                    return const Home();
-                }
-              });
-        });
+        home: const Home());
   }
 }

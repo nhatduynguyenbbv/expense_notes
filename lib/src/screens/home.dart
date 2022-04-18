@@ -11,9 +11,10 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Expense Notes')),
-      body: ListView(
-        children: const [ChartSection(), TransactionListSection()],
-      ),
+      body: Column(children: const [
+        Expanded(child: ChartSection(), flex: 4),
+        Expanded(child: TransactionListSection(), flex: 8)
+      ]),
     );
   }
 }
