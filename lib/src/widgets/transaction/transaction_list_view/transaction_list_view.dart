@@ -18,12 +18,12 @@ class TransactionListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+    return Column(children: [
       const Align(
         alignment: Alignment.centerLeft,
         child: Text('Transaction List',
             textAlign: TextAlign.left,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
       ),
       ListView.builder(
           shrinkWrap: true,

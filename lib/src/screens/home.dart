@@ -12,7 +12,7 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Expense Notes')),
       body: ListView(
-        children: [const ChartSection(), const TransactionListSection()],
+        children: const [ChartSection(), TransactionListSection()],
       ),
     );
   }
