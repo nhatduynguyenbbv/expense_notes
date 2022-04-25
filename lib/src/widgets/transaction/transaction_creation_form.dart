@@ -25,9 +25,15 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
       text: DateFormat('MMM d, yyyy').format(DateTime.now()));
 
   @override
-  Widget build(BuildContext context) {
-    final transactionModel = context.watch<TransactionModel>();
+  void dispose() {
+    nameEditingController.dispose();
+    amountEditingController.dispose();
+    dateEditingController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Form(
@@ -94,7 +100,7 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
           ]),
         ),
         ElevatedButton(
-          onPressed: () => _save(transactionModel),
+          onPressed: () => _save(),
           child: const Text('ADD'),
         ),
       ],
@@ -111,15 +117,15 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
       setState(() {
         selectedDate = picked;
         var format = DateFormat('MMM d, yyyy');
-        var dateString = format.format(DateTime.now());
+        var dateString = format.format(selectedDate);
         dateEditingController.text = dateString;
       });
     }
   }
 
-  void _save(TransactionModel transactionModel) {
+  void _save() {
     if (_formKey.currentState!.validate()) {
-      transactionModel.add(TransactionItem(
+      context.read<TransactionModel>().add(TransactionItem(
           int.parse(amountEditingController.text),
           nameEditingController.text,
           selectedDate));
