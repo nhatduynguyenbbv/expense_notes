@@ -1,14 +1,14 @@
 import 'dart:developer' as dev;
 import 'dart:math';
-// import 'dart:math';
-
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TransactionListItem extends StatelessWidget {
-  TransactionListItem({required this.item, required this.onDelete})
-      : super(key: ObjectKey(item));
+  const TransactionListItem(
+      {Key? key, required this.item, required this.onDelete})
+      : super(key: key);
+
   final TransactionItem item;
 
   final void Function(TransactionItem item) onDelete;
@@ -16,6 +16,7 @@ class TransactionListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final randomColor = _randomColor() ?? Colors.red;
+    dev.log('reloading' + item.name);
 
     return Card(
         child: Padding(

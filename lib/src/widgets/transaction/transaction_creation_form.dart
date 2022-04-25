@@ -26,7 +26,7 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
 
   @override
   Widget build(BuildContext context) {
-    TransactionModel transactionModel = context.watch<TransactionModel>();
+    final transactionModel = context.watch<TransactionModel>();
 
     return Column(
       children: [
