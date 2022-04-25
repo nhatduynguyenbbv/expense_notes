@@ -6,6 +6,8 @@ class ChartSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.green, child: const Chart());
+    return Container(
+        padding: const EdgeInsets.all(16),
+        child: const Card(color: Colors.white, child: Chart()));
   }
 }
