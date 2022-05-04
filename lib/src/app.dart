@@ -1,3 +1,4 @@
+import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,14 +12,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (context) => TransactionModel())
-        ],
-        child: MaterialApp(
-            title: 'Expense Notes',
-            theme: ThemeData(
-              primarySwatch: Colors.purple,
-            ),
-            home: const Home()));
+      providers: [
+        ChangeNotifierProvider(create: (context) => TransactionModel())
+      ],
+      child: MaterialApp(
+          title: 'Expense Notes',
+          theme: ThemeData(
+            primarySwatch: Colors.purple,
+          ),
+          home: const Home()),
+    );
   }
 }

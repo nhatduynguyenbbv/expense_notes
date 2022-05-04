@@ -12,23 +12,24 @@ class TransactionListView extends StatelessWidget {
     final model = context.watch<TransactionModel>();
     return Expanded(
       child: model.transactions.isNotEmpty
-          ? ListView.builder(
-              shrinkWrap: true,
-              itemCount: model.transactions.length,
-              itemBuilder: (BuildContext context, int index) =>
-                  _transactionItemBuilder(context, model.transactions, index))
+          ? ListView(
+              children: model.transactions
+                  .map((transaction) =>
+                      _transactionItemBuilder(context, transaction))
+                  .toList())
           : const Center(
-              child: Text('No transactions added yet!',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.grey))),
+              child: Text(
+                'No transactions added yet!',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.grey),
+              ),
+            ),
     );
   }
 
-  Widget _transactionItemBuilder(
-      BuildContext context, List<TransactionItem> items, int index) {
-    final item = items[index];
+  Widget _transactionItemBuilder(BuildContext context, TransactionItem item) {
     return TransactionListItem(
         key: ObjectKey(item),
         item: item,
