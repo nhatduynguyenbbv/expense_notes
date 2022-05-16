@@ -1,7 +1,9 @@
 import 'package:expense_notes/src/models/transaction.dart';
+import 'package:expense_notes/src/models/transaction_data.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Chart extends StatelessWidget {
@@ -13,13 +15,15 @@ class Chart extends StatelessWidget {
     final transactions = model.transactions.toList();
     transactions.sort((a, b) => a.date.compareTo(b.date));
 
-    List<charts.Series<TransactionItem, String>> series = [
+    final transactionsByDays = _calculateTransactions(7, transactions);
+
+    List<charts.Series<TransactionData, String>> series = [
       charts.Series(
           id: "Transactions",
-          data: transactions,
-          domainFn: (TransactionItem item, _) =>
-              '${item.date.month.toString()}/${item.date.year.toString()}',
-          measureFn: (TransactionItem item, _) => item.cost,
+          data: transactionsByDays,
+          domainFn: (TransactionData item, _) =>
+              DateFormat('EEE').format(item.date),
+          measureFn: (TransactionData item, _) => item.cost,
           colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault)
     ];
 
@@ -29,7 +33,7 @@ class Chart extends StatelessWidget {
           ? Column(
               children: <Widget>[
                 Text(
-                  "Transactions by Month",
+                  "Transactions for the last 7 days",
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 Expanded(
@@ -42,5 +46,27 @@ class Chart extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             ),
     );
+  }
+
+  List<TransactionData> _calculateTransactions(
+      int days, List<TransactionItem> transactions) {
+    return transactions
+        .fold({}, (previousValue, element) {
+          Map val = previousValue as Map;
+          String date = DateFormat('dd-MM-yyyy').format(element.date);
+          if (!val.containsKey(date)) {
+            val[date] = [];
+          }
+          val[date]?.add(element);
+          return val;
+        })
+        .entries
+        .map((entry) => TransactionData(
+            DateFormat('dd-MM-yyyy').parse(entry.key),
+            entry.value
+                .map((e) => e.cost)
+                .reduce((value, element) => value + element)))
+        .take(days)
+        .toList();
   }
 }

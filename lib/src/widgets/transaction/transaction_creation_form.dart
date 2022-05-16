@@ -117,7 +117,7 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(2019, 8),
-        lastDate: DateTime(2100));
+        lastDate: DateTime.now());
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
