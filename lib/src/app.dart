@@ -1,4 +1,3 @@
-import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

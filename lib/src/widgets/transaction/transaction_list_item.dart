@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:expense_notes/src/models/transaction_item.dart';
+import 'package:expense_notes/src/widgets/transaction/transaction_detail/transaction_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -26,58 +27,69 @@ class _TransactionListItemState extends State<TransactionListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 80,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: randomColor, width: 2)),
-                    child: Text(
-                      '\$${widget.item.cost.toString()}',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: randomColor),
-                    ),
-                  ),
-                  Container(
-                    height: 48,
-                    padding: const EdgeInsets.only(left: 16),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.item.name,
-                          style: const TextStyle(
-                            fontSize: 18,
+    return GestureDetector(
+      onTap: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => TransactionDetail(item: widget.item)),
+        )
+      },
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 80,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: randomColor, width: 2)),
+                      child: Text(
+                        '\$${widget.item.cost.toString()}',
+                        style: TextStyle(
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(DateFormat('MMM d, yyyy').format(widget.item.date),
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.grey))
-                      ],
+                            color: randomColor),
+                      ),
                     ),
-                  )
-                ],
+                    Container(
+                      height: 48,
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.item.name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                              DateFormat('MMM d, yyyy')
+                                  .format(widget.item.date),
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.grey))
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-            IconButton(
-              onPressed: () => widget.onDelete(widget.item),
-              icon: const Icon(Icons.delete, color: Colors.red),
-            ),
-          ],
+              IconButton(
+                onPressed: () => widget.onDelete(widget.item),
+                icon: const Icon(Icons.delete, color: Colors.red),
+              ),
+            ],
+          ),
         ),
       ),
     );
