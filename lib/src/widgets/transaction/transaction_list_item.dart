@@ -27,7 +27,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () => {
         Navigator.push(
           context,
@@ -46,12 +46,11 @@ class _TransactionListItemState extends State<TransactionListItem> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                      width: 80,
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                           border: Border.all(color: randomColor, width: 2)),
                       child: Text(
-                        '\$${widget.item.cost.toString()}',
+                        '\$${widget.item.cost.toDouble().toString()}',
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -74,10 +73,10 @@ class _TransactionListItemState extends State<TransactionListItem> {
                             ),
                           ),
                           Text(
-                              DateFormat('MMM d, yyyy')
-                                  .format(widget.item.date),
-                              style: const TextStyle(
-                                  fontSize: 14, color: Colors.grey))
+                            DateFormat('MMM d, yyyy').format(widget.item.date),
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.grey),
+                          )
                         ],
                       ),
                     )

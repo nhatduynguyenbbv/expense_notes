@@ -32,8 +32,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           onTap: () {
-            Navigator.pop(context);
-            Navigator.of(context).push(MaterialPageRoute(
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (BuildContext context) => const Home()));
           },
         ),
@@ -46,8 +45,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           onTap: () {
-            Navigator.pop(context);
-            Navigator.of(context).push(MaterialPageRoute(
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (BuildContext context) => const Settings()));
           },
         ),

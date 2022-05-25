@@ -2,7 +2,7 @@ import 'package:expense_notes/src/models/transaction.dart';
 import 'package:expense_notes/src/models/transaction_data.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -12,32 +12,92 @@ class Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<TransactionModel>();
-    final transactions = model.transactions.toList();
-    transactions.sort((a, b) => a.date.compareTo(b.date));
-
-    final transactionsByDays = _calculateTransactions(7, transactions);
-
-    List<charts.Series<TransactionData, String>> series = [
-      charts.Series(
-          id: "Transactions",
-          data: transactionsByDays,
-          domainFn: (TransactionData item, _) =>
-              DateFormat('EEE').format(item.date),
-          measureFn: (TransactionData item, _) => item.cost,
-          colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault)
+    final weekDays = [
+      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -6))),
+      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -5))),
+      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -4))),
+      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -3))),
+      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -2))),
+      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -1))),
+      DateFormat("EEE").format(DateTime.now()),
     ];
+    final transactionsByDays =
+        _groupTransactionsByDate(model.transactions.toList());
+
+    final barGroups = weekDays.map((day) {
+      var trans = transactionsByDays
+          .where((tran) => day == DateFormat("EEE").format(tran.date));
+
+      return BarChartGroupData(
+          x: trans.isEmpty
+              ? weekDays.indexOf(day)
+              : weekDays.indexOf(DateFormat("EEE").format(trans.first.date)),
+          barRods: [
+            BarChartRodData(
+                toY: trans.isEmpty ? 0 : trans.first.cost.toDouble(),
+                width: 10,
+                color: Colors.amber)
+          ]);
+    }).toList();
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: transactions.isNotEmpty
+      child: model.transactions.toList().isNotEmpty
           ? Column(
               children: <Widget>[
                 Text(
                   "Transactions for the last 7 days",
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Expanded(
-                  child: charts.BarChart(series, animate: true),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BarChart(
+                      BarChartData(
+                        borderData: FlBorderData(
+                          show: false,
+                        ),
+                        titlesData: FlTitlesData(
+                          show: true,
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (double value, TitleMeta meta) =>
+                                  Text(
+                                weekDays[value.toInt()],
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                          leftTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 40,
+                            getTitlesWidget: (double value, TitleMeta meta) =>
+                                Text(
+                              "\$${value.toString()}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                              ),
+                            ),
+                          )),
+                          topTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          rightTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                        ),
+                        barGroups: barGroups,
+                        gridData: FlGridData(show: false),
+                        alignment: BarChartAlignment.spaceAround,
+                      ),
+                    ),
+                  ),
                 )
               ],
             )
@@ -48,12 +108,18 @@ class Chart extends StatelessWidget {
     );
   }
 
-  List<TransactionData> _calculateTransactions(
-      int days, List<TransactionItem> transactions) {
+  List<TransactionData> _groupTransactionsByDate(
+      List<TransactionItem> transactions) {
+    const dateFormat = 'dd-MM-yyyy';
+
     return transactions
+        .where((element) =>
+            element.date
+                .compareTo(DateTime.now().add(const Duration(days: -7))) >
+            0)
         .fold({}, (previousValue, element) {
           Map val = previousValue as Map;
-          String date = DateFormat('dd-MM-yyyy').format(element.date);
+          String date = DateFormat(dateFormat).format(element.date);
           if (!val.containsKey(date)) {
             val[date] = [];
           }
@@ -62,11 +128,10 @@ class Chart extends StatelessWidget {
         })
         .entries
         .map((entry) => TransactionData(
-            DateFormat('dd-MM-yyyy').parse(entry.key),
+            DateFormat(dateFormat).parse(entry.key),
             entry.value
                 .map((e) => e.cost)
                 .reduce((value, element) => value + element)))
-        .take(days)
         .toList();
   }
 }
