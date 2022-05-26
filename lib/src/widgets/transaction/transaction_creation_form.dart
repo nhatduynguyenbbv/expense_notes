@@ -119,7 +119,8 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
         ElevatedButton(
           onPressed: () =>
               widget.item == null ? _add() : _edit(widget.item!.id),
-          child: Text(widget.item != null ? 'EDIT' : 'ADD'),
+          child: Text(widget.item != null ? 'EDIT' : 'ADD',
+              style: const TextStyle(color: Colors.white)),
         ),
       ],
     );

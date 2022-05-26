@@ -5,7 +5,11 @@ class AppThemeData {
     primaryColor: Colors.purpleAccent,
     brightness: Brightness.light,
     scaffoldBackgroundColor: Colors.white,
-    colorScheme: const ColorScheme.light(),
+    colorScheme: const ColorScheme.light(
+      primary: Colors.purpleAccent,
+      onPrimary: Colors.white,
+      onSurface: Colors.black,
+    ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: Colors.purpleAccent),
     appBarTheme: const AppBarTheme(
@@ -17,13 +21,25 @@ class AppThemeData {
         onPrimary: Colors.black,
       ),
     ),
+    inputDecorationTheme: const InputDecorationTheme(
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.purpleAccent),
+      ),
+    ),
   );
 
   static ThemeData darkTheme = ThemeData(
     primaryColor: Colors.purple,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: Colors.black,
-    colorScheme: const ColorScheme.dark(),
+    colorScheme: const ColorScheme.dark(
+      primary: Colors.purple,
+      onPrimary: Colors.white,
+      onSurface: Colors.black,
+    ),
     floatingActionButtonTheme:
         const FloatingActionButtonThemeData(backgroundColor: Colors.purple),
     appBarTheme: const AppBarTheme(
@@ -33,6 +49,14 @@ class AppThemeData {
       style: ElevatedButton.styleFrom(
         primary: Colors.purple,
         onPrimary: Colors.black,
+      ),
+    ),
+    inputDecorationTheme: const InputDecorationTheme(
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.purple),
       ),
     ),
   );

@@ -108,7 +108,10 @@ class Chart extends StatelessWidget {
             )
           : const Center(
               child: Text('My Chart',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.black)),
             ),
     );
   }
