@@ -1,17 +1,22 @@
 import 'dart:math';
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:expense_notes/src/screens/transaction_detail.dart';
+import 'package:expense_notes/src/utilizes/date.util.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class TransactionListItem extends StatefulWidget {
   const TransactionListItem(
-      {Key? key, required this.item, required this.onDelete})
+      {Key? key,
+      required this.item,
+      required this.onDelete,
+      required this.onEdit})
       : super(key: key);
 
   final TransactionItem item;
 
   final void Function(TransactionItem item) onDelete;
+
+  final void Function(TransactionItem item) onEdit;
 
   @override
   State<TransactionListItem> createState() => _TransactionListItemState();
@@ -70,7 +75,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
                             ),
                           ),
                           Text(
-                            DateFormat('MMM d, yyyy').format(widget.item.date),
+                            widget.item.date.toDateString(),
                             style: const TextStyle(
                                 fontSize: 14, color: Colors.grey),
                           )
@@ -79,6 +84,10 @@ class _TransactionListItemState extends State<TransactionListItem> {
                     )
                   ],
                 ),
+              ),
+              IconButton(
+                onPressed: () => widget.onEdit(widget.item),
+                icon: const Icon(Icons.edit, color: Colors.grey),
               ),
               IconButton(
                 onPressed: () => widget.onDelete(widget.item),

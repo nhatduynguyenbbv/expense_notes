@@ -15,6 +15,15 @@ class TransactionModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void edit(TransactionItem item) {
+    var transactionIdx = _transactions.indexWhere((tran) => tran.id == item.id);
+    if (transactionIdx > -1) {
+      _transactions[transactionIdx] = item;
+
+      notifyListeners();
+    }
+  }
+
   void remove(TransactionItem item) {
     _transactions.remove(item);
 

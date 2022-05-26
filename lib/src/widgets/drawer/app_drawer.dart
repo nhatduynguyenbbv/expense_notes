@@ -9,13 +9,13 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(padding: EdgeInsets.zero, children: [
-        const SizedBox(
+        SizedBox(
           height: 120,
           child: DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.purple,
+              color: Theme.of(context).primaryColor,
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 'Expense Notes',
                 style: TextStyle(fontSize: 20, color: Colors.white),

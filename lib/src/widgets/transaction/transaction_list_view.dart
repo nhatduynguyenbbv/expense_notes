@@ -1,5 +1,7 @@
 import 'package:expense_notes/src/models/transaction.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
+import 'package:expense_notes/src/utilizes/modal-bottom-sheet.dart';
+import 'package:expense_notes/src/widgets/transaction/transaction_creation_form.dart';
 import 'package:expense_notes/src/widgets/transaction/transaction_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +35,11 @@ class TransactionListView extends StatelessWidget {
     return TransactionListItem(
         key: ObjectKey(item),
         item: item,
-        onDelete: (item) => {context.read<TransactionModel>().remove(item)});
+        onDelete: (item) => {context.read<TransactionModel>().remove(item)},
+        onEdit: (item) => showCustomModalBottomSheet(
+              title: "Edit Transaction",
+              context: context,
+              content: TransactionCreationForm(item: item),
+            ));
   }
 }

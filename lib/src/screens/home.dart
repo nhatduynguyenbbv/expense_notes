@@ -26,7 +26,6 @@ class Home extends StatelessWidget {
       ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _onButtonPressed(context),
-        backgroundColor: Colors.purple,
         child: const Icon(Icons.add),
       ),
       drawer: const AppDrawer(),

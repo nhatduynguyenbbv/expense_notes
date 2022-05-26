@@ -1,6 +1,7 @@
 import 'package:expense_notes/src/models/transaction.dart';
 import 'package:expense_notes/src/models/transaction_data.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
+import 'package:expense_notes/src/utilizes/date.util.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
@@ -14,28 +15,31 @@ class Chart extends StatelessWidget {
     final model = context.watch<TransactionModel>();
     final today = DateTime.now();
     final weekDays = [
-      DateFormat("EEE").format(today.add(const Duration(days: -6))),
-      DateFormat("EEE").format(today.add(const Duration(days: -5))),
-      DateFormat("EEE").format(today.add(const Duration(days: -4))),
-      DateFormat("EEE").format(today.add(const Duration(days: -3))),
-      DateFormat("EEE").format(today.add(const Duration(days: -2))),
-      DateFormat("EEE").format(today.add(const Duration(days: -1))),
-      DateFormat("EEE").format(today),
+      today.add(const Duration(days: -6)).toDateString("EEE"),
+      today.add(const Duration(days: -5)).toDateString("EEE"),
+      today.add(const Duration(days: -4)).toDateString("EEE"),
+      today.add(const Duration(days: -3)).toDateString("EEE"),
+      today.add(const Duration(days: -2)).toDateString("EEE"),
+      today.add(const Duration(days: -1)).toDateString("EEE"),
+      today.toDateString("EEE")
     ];
     final transactionsByDays =
         _groupTransactionsByDate(model.transactions.toList());
 
     final barGroups = weekDays.map((day) {
-      var trans = transactionsByDays
-          .where((tran) => day == DateFormat("EEE").format(tran.date));
+      var tranIdx = transactionsByDays
+          .indexWhere((tran) => day == tran.date.toDateString("EEE"));
 
       return BarChartGroupData(
-          x: trans.isEmpty
+          x: tranIdx < 0
               ? weekDays.indexOf(day)
-              : weekDays.indexOf(DateFormat("EEE").format(trans.first.date)),
+              : weekDays.indexOf(
+                  transactionsByDays[tranIdx].date.toDateString("EEE")),
           barRods: [
             BarChartRodData(
-                toY: trans.isEmpty ? 0 : trans.first.cost.toDouble(),
+                toY: tranIdx < 0
+                    ? 0
+                    : transactionsByDays[tranIdx].cost.toDouble(),
                 width: 10,
                 color: Colors.amber)
           ]);
@@ -112,15 +116,16 @@ class Chart extends StatelessWidget {
   List<TransactionData> _groupTransactionsByDate(
       List<TransactionItem> transactions) {
     const dateFormat = 'dd-MM-yyyy';
+    const lastDays = -7;
 
     return transactions
         .where((element) =>
             element.date
-                .compareTo(DateTime.now().add(const Duration(days: -7))) >
+                .compareTo(DateTime.now().add(const Duration(days: lastDays))) >
             0)
         .fold({}, (previousValue, element) {
           Map val = previousValue as Map;
-          String date = DateFormat(dateFormat).format(element.date);
+          String date = element.date.toDateString(dateFormat);
           if (!val.containsKey(date)) {
             val[date] = [];
           }
