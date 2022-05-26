@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:expense_notes/src/models/transaction_item.dart';
-import 'package:expense_notes/src/widgets/transaction/transaction_detail/transaction_detail.dart';
+import 'package:expense_notes/src/screens/transaction_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -29,11 +29,8 @@ class _TransactionListItemState extends State<TransactionListItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => TransactionDetail(item: widget.item)),
-        )
+        Navigator.pushNamed(context, TransactionDetail.routeName,
+            arguments: widget.item)
       },
       child: Card(
         child: Padding(

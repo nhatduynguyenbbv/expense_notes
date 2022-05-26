@@ -24,18 +24,16 @@ class AppDrawer extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: const Align(
-            alignment: Alignment.center,
-            child: Text(
-              'Home',
-              style: TextStyle(fontSize: 16),
+            title: const Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Home',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
-          ),
-          onTap: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => const Home()));
-          },
-        ),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, Home.routeName);
+            }),
         ListTile(
           title: const Align(
             alignment: Alignment.center,
@@ -45,8 +43,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           onTap: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => const Settings()));
+            Navigator.pushReplacementNamed(context, Settings.routeName);
           },
         ),
       ]),

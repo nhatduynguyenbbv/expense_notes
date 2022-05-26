@@ -12,14 +12,15 @@ class Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<TransactionModel>();
+    final today = DateTime.now();
     final weekDays = [
-      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -6))),
-      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -5))),
-      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -4))),
-      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -3))),
-      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -2))),
-      DateFormat("EEE").format(DateTime.now().add(const Duration(days: -1))),
-      DateFormat("EEE").format(DateTime.now()),
+      DateFormat("EEE").format(today.add(const Duration(days: -6))),
+      DateFormat("EEE").format(today.add(const Duration(days: -5))),
+      DateFormat("EEE").format(today.add(const Duration(days: -4))),
+      DateFormat("EEE").format(today.add(const Duration(days: -3))),
+      DateFormat("EEE").format(today.add(const Duration(days: -2))),
+      DateFormat("EEE").format(today.add(const Duration(days: -1))),
+      DateFormat("EEE").format(today),
     ];
     final transactionsByDays =
         _groupTransactionsByDate(model.transactions.toList());
