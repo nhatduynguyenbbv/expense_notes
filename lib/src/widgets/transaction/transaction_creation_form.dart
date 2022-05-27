@@ -1,4 +1,4 @@
-import 'package:expense_notes/src/models/transaction.dart';
+import 'package:expense_notes/src/models/transaction_model.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:expense_notes/src/utilizes/date.util.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
   void initState() {
     super.initState();
 
-    nameEditingController.text = widget.item?.name ?? ""; // ;
+    nameEditingController.text = widget.item?.name ?? "";
     amountEditingController.text = widget.item?.cost.toString() ?? "";
     dateEditingController.text =
         widget.item?.date.toDateString() ?? DateTime.now().toDateString();
@@ -117,8 +117,9 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
               ]),
         ),
         ElevatedButton(
-          onPressed: () =>
-              widget.item == null ? _add() : _edit(widget.item!.id),
+          onPressed: () async => widget.item == null
+              ? await _add()
+              : await _edit(widget.item?.id ?? ''),
           child: Text(widget.item != null ? 'EDIT' : 'ADD',
               style: const TextStyle(color: Colors.white)),
         ),
@@ -140,25 +141,24 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
     }
   }
 
-  void _add() {
+  Future<void> _add() async {
     if (_formKey.currentState!.validate()) {
-      context.read<TransactionModel>().add(TransactionItem(
-          DateTime.now().millisecondsSinceEpoch,
-          int.parse(amountEditingController.text),
-          nameEditingController.text,
-          selectedDate));
+      await context.read<TransactionModel>().add(TransactionItem(
+          cost: int.parse(amountEditingController.text),
+          name: nameEditingController.text,
+          date: selectedDate));
 
       Navigator.pop(context);
     }
   }
 
-  void _edit(int id) {
+  Future<void> _edit(String id) async {
     if (_formKey.currentState!.validate()) {
-      context.read<TransactionModel>().edit(TransactionItem(
-          id,
-          int.parse(amountEditingController.text),
-          nameEditingController.text,
-          selectedDate));
+      await context.read<TransactionModel>().edit(TransactionItem(
+          id: id,
+          cost: int.parse(amountEditingController.text),
+          name: nameEditingController.text,
+          date: selectedDate));
 
       Navigator.pop(context);
     }

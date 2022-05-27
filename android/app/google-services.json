@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "106978689703",
+    "firebase_url": "https://fir-expense-notes-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fir-expense-notes",
+    "storage_bucket": "fir-expense-notes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106978689703:android:a3b159bb2a0a4f3aa85182",
+        "android_client_info": {
+          "package_name": "com.example.expense_notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106978689703-d37bfef8tdud26j01f4jfkp2efpdcf3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqoo_07zeJpdGVXT8wz_Du_-6MZS1--ns"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106978689703-d37bfef8tdud26j01f4jfkp2efpdcf3f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "106978689703-ildm0uns90j96cvd0sauv2ib3s640no9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.expenseNotes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

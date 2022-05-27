@@ -1,4 +1,4 @@
-import 'package:expense_notes/src/models/transaction.dart';
+import 'package:expense_notes/src/models/transaction_model.dart';
 import 'package:expense_notes/src/models/transaction_data.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:expense_notes/src/utilizes/date.util.dart';
