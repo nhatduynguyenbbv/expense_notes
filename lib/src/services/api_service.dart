@@ -25,11 +25,11 @@ class ApiService {
     return ref.child(id).remove();
   }
 
-  Future<DataSnapshot> add(Object? data) {
+  Future<String> add(Object? data) async {
     var docRef = ref.push();
-    docRef.set(data);
+    await docRef.set(data);
 
-    return docRef.get();
+    return Future.value(docRef.key);
   }
 
   Future<void> update(dynamic data, String id) {

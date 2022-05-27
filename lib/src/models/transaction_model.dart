@@ -23,9 +23,11 @@ class TransactionModel extends ChangeNotifier {
   }
 
   Future<void> add(TransactionItem item) async {
-    var newItem = await api.add(item.toJson());
+    var key = await api.add(item.toJson());
+    var newTran = TransactionItem(
+        id: key, cost: item.cost, name: item.name, date: item.date);
 
-    _transactions.add(TransactionItem.fromSnapshot(newItem));
+    _transactions.add(newTran);
 
     notifyListeners();
   }
