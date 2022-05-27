@@ -18,6 +18,15 @@ class TransactionItem {
         date: dateString != null ? DateTime.parse(dateString) : DateTime.now());
   }
 
+  factory TransactionItem.fromMap(Map snapshot, String key) {
+    var dateString = (snapshot)["date"];
+    return TransactionItem(
+        id: key,
+        cost: snapshot['cost'],
+        name: snapshot["name"] ?? '',
+        date: dateString != null ? DateTime.parse(dateString) : DateTime.now());
+  }
+
   toJson() {
     return {
       "cost": cost,
