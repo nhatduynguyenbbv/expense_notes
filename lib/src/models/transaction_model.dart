@@ -2,11 +2,10 @@ import 'dart:collection';
 
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:expense_notes/src/services/api_service.dart';
-import 'package:expense_notes/src/services/http_service.dart';
 import 'package:flutter/foundation.dart';
 
 class TransactionModel extends ChangeNotifier {
-  final ApiService api = HttpService("transactions");
+  final ApiService api = ApiService(DataProvider.http, "transactions");
 
   late List<TransactionItem> _transactions = [];
 
@@ -16,8 +15,8 @@ class TransactionModel extends ChangeNotifier {
   Future<void> fetch() async {
     var result = await api.get();
 
-    _transactions = result.entries
-        .map((doc) => TransactionItem.fromMap(doc.value, doc.key))
+    _transactions = result
+        .map((doc) => TransactionItem.fromMap(doc.value as Map, doc.key))
         .toList();
 
     notifyListeners();

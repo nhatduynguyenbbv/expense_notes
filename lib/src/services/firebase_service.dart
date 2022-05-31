@@ -1,6 +1,9 @@
+import 'dart:async';
+
+import 'package:expense_notes/src/services/api_service.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class FirebaseService {
+class FirebaseService implements ApiService {
   final FirebaseDatabase _db = FirebaseDatabase.instance;
   final String path;
   late DatabaseReference ref;
@@ -9,22 +12,26 @@ class FirebaseService {
     ref = _db.ref(path);
   }
 
-  Future<DataSnapshot> get() {
-    return ref.get();
+  @override
+  Future<List<MapEntry<String, Object?>>> get() async {
+    var res = await ref.get();
+    var data = res.children
+        .map((e) => MapEntry<String, Object?>(e.key.toString(), e.value));
+
+    return Future.value(data.toList());
   }
 
-  Stream<DatabaseEvent> stream() {
-    return ref.onValue;
+  @override
+  Future<Map<String, Object?>> getById(String id) {
+    return ref.child(id).get() as Future<Map<String, dynamic>>;
   }
 
-  Future<DataSnapshot> getById(String id) {
-    return ref.child(id).get();
-  }
-
+  @override
   Future<void> remove(String id) {
     return ref.child(id).remove();
   }
 
+  @override
   Future<String> add(Object? data) async {
     var docRef = ref.push();
     await docRef.set(data);
@@ -32,6 +39,7 @@ class FirebaseService {
     return Future.value(docRef.key);
   }
 
+  @override
   Future<void> update(dynamic data, String id) {
     return ref.child(id).update(data);
   }
