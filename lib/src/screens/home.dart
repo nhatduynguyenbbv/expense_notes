@@ -1,6 +1,7 @@
 import 'package:expense_notes/src/utilizes/modal-bottom-sheet.dart';
 import 'package:expense_notes/src/widgets/chart/chart_section.dart';
 import 'package:expense_notes/src/widgets/drawer/app_drawer.dart';
+import 'package:expense_notes/src/widgets/progress/progress_indicator.dart';
 import 'package:expense_notes/src/widgets/transaction/transaction_creation_form.dart';
 import 'package:expense_notes/src/widgets/transaction/transaction_list_section.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +14,24 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Expense Notes'), actions: <Widget>[
-        TextButton(
-          style: TextButton.styleFrom(textStyle: const TextStyle(fontSize: 18)),
-          onPressed: () => _onButtonPressed(context),
-          child: const Text('ADD', style: TextStyle(color: Colors.white)),
+      appBar: AppBar(
+        title: const Text('Expense Notes'),
+        actions: <Widget>[
+          TextButton(
+            style: TextButton.styleFrom(
+              textStyle: const TextStyle(fontSize: 18),
+            ),
+            onPressed: () => _onButtonPressed(context),
+            child: const Text(
+              'ADD',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+        bottom: AppLinearProgressIndicator(
+          appBar: AppBar(),
         ),
-      ]),
+      ),
       body: Column(children: const [
         Expanded(child: ChartSection(), flex: 1),
         Expanded(child: TransactionListSection(), flex: 2)

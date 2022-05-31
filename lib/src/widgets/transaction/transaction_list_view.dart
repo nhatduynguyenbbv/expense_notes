@@ -1,3 +1,4 @@
+import 'package:expense_notes/src/models/app_model.dart';
 import 'package:expense_notes/src/models/transaction_model.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:expense_notes/src/utilizes/modal-bottom-sheet.dart';
@@ -11,10 +12,12 @@ class TransactionListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<AppModel>().setLoading(true);
     return FutureBuilder<void>(
         future: context.read<TransactionModel>().fetch(),
         builder: (context, snapshot) {
           final model = context.watch<TransactionModel>();
+          context.read<AppModel>().setLoading(false);
 
           return Expanded(
             child: model.transactions.isNotEmpty

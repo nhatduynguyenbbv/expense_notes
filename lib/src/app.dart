@@ -1,3 +1,4 @@
+import 'package:expense_notes/src/models/app_model.dart';
 import 'package:expense_notes/src/models/app_theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => TransactionModel()),
+        ChangeNotifierProvider(create: (context) => AppModel()),
         ChangeNotifierProvider(
           create: (context) => ThemeModel(),
           builder: (context, c) => FutureBuilder(
