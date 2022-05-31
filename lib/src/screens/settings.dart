@@ -13,26 +13,61 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  late bool _darkMode;
+  final List<ThemeMode> themeModes = ThemeMode.values;
+  final Map<ThemeMode, String> themeModeLabels = {
+    ThemeMode.dark: 'Dark',
+    ThemeMode.light: 'Light',
+    ThemeMode.system: 'System'
+  };
 
   @override
   Widget build(BuildContext context) {
-    _darkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(title: const Text('Expense Notes')),
       body: Consumer<ThemeModel>(builder: (_, model, __) {
-        return Center(
-          child: SwitchListTile(
-            title: const Text('Dark Mode'),
-            secondary: const Icon(Icons.lightbulb_outline),
-            onChanged: (bool value) {
-              context.read<ThemeModel>().toggleMode();
-            },
-            value: model.mode == ThemeMode.system && _darkMode
-                ? true
-                : model.mode == ThemeMode.dark,
-          ),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const ListTile(
+              title: Text(
+                'General Setting',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 8, right: 8),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(Icons.light_outlined),
+                          SizedBox(width: 8),
+                          Text("Theme Mode"),
+                        ],
+                      ),
+                      DropdownButton<ThemeMode>(
+                        value: model.mode,
+                        items: themeModes
+                            .map((value) => DropdownMenuItem<ThemeMode>(
+                                  value: value,
+                                  child:
+                                      Text(themeModeLabels[value].toString()),
+                                ))
+                            .toList(),
+                        onChanged: (ThemeMode? value) async {
+                          await model.updateThemeMode(value);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       }),
       drawer: const AppDrawer(),

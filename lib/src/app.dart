@@ -14,24 +14,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (context) => TransactionModel()),
-          ChangeNotifierProvider(create: (context) => ThemeModel())
-        ],
-        child: Consumer<ThemeModel>(builder: (_, model, __) {
-          return MaterialApp(
-            title: 'Expense Notes',
-            themeMode: model.mode,
-            theme: AppThemeData.lightTheme,
-            darkTheme: AppThemeData.darkTheme,
-            routes: {
-              Home.routeName: (context) => const Home(),
-              Settings.routeName: (context) => const Settings(),
-              TransactionDetail.routeName: (context) =>
-                  const TransactionDetail()
-            },
-            home: const Home(),
-          );
-        }));
+      providers: [
+        ChangeNotifierProvider(create: (context) => TransactionModel()),
+        ChangeNotifierProvider(
+          create: (context) => ThemeModel(),
+          builder: (context, c) => FutureBuilder(
+            future: context.read<ThemeModel>().loadThemeMode(),
+            builder: (context, snapshot) => Consumer<ThemeModel>(
+              builder: (_, model, __) {
+                return MaterialApp(
+                  title: 'Expense Notes',
+                  themeMode: model.mode,
+                  theme: AppThemeData.lightTheme,
+                  darkTheme: AppThemeData.darkTheme,
+                  routes: {
+                    Home.routeName: (context) => const Home(),
+                    Settings.routeName: (context) => const Settings(),
+                    TransactionDetail.routeName: (context) =>
+                        const TransactionDetail()
+                  },
+                  home: const Home(),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
