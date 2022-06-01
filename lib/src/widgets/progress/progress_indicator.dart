@@ -46,7 +46,7 @@ class _AppLinearProgressIndicatorState extends State<AppLinearProgressIndicator>
     return Consumer<AppModel>(
       builder: (context, model, child) => model.isLoading
           ? LinearProgressIndicator(
-              backgroundColor: Colors.grey,
+              backgroundColor: Colors.amber,
               value: controller.value,
               semanticsLabel: 'Is Loading',
             )
