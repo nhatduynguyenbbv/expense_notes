@@ -50,7 +50,7 @@ class _AppLinearProgressIndicatorState extends State<AppLinearProgressIndicator>
               value: controller.value,
               semanticsLabel: 'Is Loading',
             )
-          : const Text(''),
+          : const SizedBox.shrink(),
     );
   }
 }

@@ -17,7 +17,8 @@ class TransactionListView extends StatelessWidget {
         future: context.read<TransactionModel>().fetch(),
         builder: (context, snapshot) {
           final model = context.watch<TransactionModel>();
-          context.read<AppModel>().setLoading(false);
+          var future = Future.delayed(const Duration(seconds: 5));
+          future.then((value) => context.read<AppModel>().setLoading(false));
 
           return Expanded(
             child: model.transactions.isNotEmpty
