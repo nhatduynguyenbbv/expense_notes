@@ -12,37 +12,40 @@ class TransactionListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<AppModel>().setLoading(true);
     return FutureBuilder<void>(
         future: context.read<TransactionModel>().fetch(),
         builder: (context, snapshot) {
-          final model = context.watch<TransactionModel>();
-          var future = Future.delayed(const Duration(seconds: 5));
-          future.then((value) => context.read<AppModel>().setLoading(false));
+          if (snapshot.connectionState == ConnectionState.done) {
+            context.read<AppModel>().setLoading(false);
+          } else {
+            context.read<AppModel>().setLoading(true);
+          }
 
-          return Expanded(
-            child: model.transactions.isNotEmpty
-                ? ListView(
-                    children: model.transactions
-                        .map((transaction) =>
-                            _transactionItemBuilder(context, transaction))
-                        .toList())
-                : const Center(
-                    child: Text(
-                      'No transactions added yet!',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.grey),
+          return Consumer<TransactionModel>(
+            builder: (context, model, child) => Expanded(
+              child: model.transactions.isNotEmpty
+                  ? ListView(
+                      children: model.transactions
+                          .map((transaction) =>
+                              _transactionItemBuilder(context, transaction))
+                          .toList())
+                  : const Center(
+                      child: Text(
+                        'No transactions added yet!',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.grey),
+                      ),
                     ),
-                  ),
+            ),
           );
         });
   }
 
   Widget _transactionItemBuilder(BuildContext context, TransactionItem item) {
     return TransactionListItem(
-        key: ObjectKey(item),
+        key: Key(item.id.toString()),
         item: item,
         onDelete: (item) async =>
             {await context.read<TransactionModel>().remove(item)},

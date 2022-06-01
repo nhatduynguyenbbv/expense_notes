@@ -1,3 +1,4 @@
+import 'package:expense_notes/src/models/app_model.dart';
 import 'package:expense_notes/src/models/transaction_model.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:expense_notes/src/utilizes/date.util.dart';
@@ -143,22 +144,26 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
 
   Future<void> _add() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.pop(context);
+      context.read<AppModel>().setLoading(true);
       await context.read<TransactionModel>().add(TransactionItem(
           cost: int.parse(amountEditingController.text),
           name: nameEditingController.text,
           date: selectedDate));
+      context.read<AppModel>().setLoading(false);
+      Navigator.pop(context);
     }
   }
 
   Future<void> _edit(String id) async {
     if (_formKey.currentState!.validate()) {
-      Navigator.pop(context);
+      context.read<AppModel>().setLoading(true);
       await context.read<TransactionModel>().edit(TransactionItem(
           id: id,
           cost: int.parse(amountEditingController.text),
           name: nameEditingController.text,
           date: selectedDate));
+      context.read<AppModel>().setLoading(false);
+      Navigator.pop(context);
     }
   }
 
