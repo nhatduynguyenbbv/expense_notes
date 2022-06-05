@@ -1,7 +1,11 @@
 import 'package:expense_notes/src/models/theme_model.dart';
+import 'package:expense_notes/src/screens/sign_in.dart';
+import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:expense_notes/src/widgets/drawer/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'home.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -39,34 +43,55 @@ class _SettingsState extends State<Settings> {
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
                     children: [
                       Row(
-                        children: const [
-                          Icon(Icons.light_outlined),
-                          SizedBox(width: 8),
-                          Text("Theme Mode"),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: const [
+                              Icon(Icons.light_outlined),
+                              SizedBox(width: 8),
+                              Text("Theme Mode"),
+                            ],
+                          ),
+                          DropdownButton<ThemeMode>(
+                            value: model.mode,
+                            items: themeModes
+                                .map((value) => DropdownMenuItem<ThemeMode>(
+                                      value: value,
+                                      child: Text(
+                                          themeModeLabels[value].toString()),
+                                    ))
+                                .toList(),
+                            onChanged: (ThemeMode? value) async {
+                              await model.updateThemeMode(value);
+                            },
+                          ),
                         ],
-                      ),
-                      DropdownButton<ThemeMode>(
-                        value: model.mode,
-                        items: themeModes
-                            .map((value) => DropdownMenuItem<ThemeMode>(
-                                  value: value,
-                                  child:
-                                      Text(themeModeLabels[value].toString()),
-                                ))
-                            .toList(),
-                        onChanged: (ThemeMode? value) async {
-                          await model.updateThemeMode(value);
-                        },
                       ),
                     ],
                   ),
                 ),
               ),
             ),
+            Container(
+              margin: const EdgeInsets.only(left: 16, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text("Sign Out"),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.logout),
+                    onPressed: () async {
+                      await AuthService().signOut();
+                      Navigator.pushReplacementNamed(context, SignIn.routeName);
+                    },
+                  ),
+                ],
+              ),
+            )
           ],
         );
       }),

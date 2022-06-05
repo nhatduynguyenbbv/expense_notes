@@ -1,5 +1,8 @@
 import 'package:expense_notes/src/models/app_model.dart';
 import 'package:expense_notes/src/models/app_theme_data.dart';
+import 'package:expense_notes/src/screens/sign_in.dart';
+import 'package:expense_notes/src/screens/sign_up.dart';
+import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,32 +19,49 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => TransactionModel()),
-        ChangeNotifierProvider(create: (context) => AppModel()),
+        ChangeNotifierProvider(
+          create: (context) => TransactionModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AppModel(),
+        ),
         ChangeNotifierProvider(
           create: (context) => ThemeModel(),
-          builder: (context, c) => FutureBuilder(
-            future: context.read<ThemeModel>().loadThemeMode(),
-            builder: (context, snapshot) => Consumer<ThemeModel>(
-              builder: (_, model, __) {
-                return MaterialApp(
-                  title: 'Expense Notes',
-                  themeMode: model.mode,
-                  theme: AppThemeData.lightTheme,
-                  darkTheme: AppThemeData.darkTheme,
-                  routes: {
-                    Home.routeName: (context) => const Home(),
-                    Settings.routeName: (context) => const Settings(),
-                    TransactionDetail.routeName: (context) =>
-                        const TransactionDetail()
-                  },
-                  home: const Home(),
-                );
-              },
-            ),
-          ),
         ),
       ],
+      builder: (context, child) => FutureBuilder(
+        future: context.read<ThemeModel>().loadThemeMode(),
+        builder: (context, snapshot) => Consumer<ThemeModel>(
+          builder: (_, model, __) {
+            return MaterialApp(
+              title: 'Expense Notes',
+              themeMode: model.mode,
+              theme: AppThemeData.lightTheme,
+              darkTheme: AppThemeData.darkTheme,
+              routes: {
+                Home.routeName: (context) => const Home(),
+                Settings.routeName: (context) => const Settings(),
+                TransactionDetail.routeName: (context) =>
+                    const TransactionDetail(),
+                SignIn.routeName: (context) => const SignIn(),
+                SignUp.routeName: (context) => const SignUp(),
+              },
+              home: StreamBuilder(
+                stream: AuthService().getCurrentUser(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    return snapshot.data != null
+                        ? const Home()
+                        : const SignIn();
+                  } else {
+                    return Container(color: Colors.white);
+                  }
+                },
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

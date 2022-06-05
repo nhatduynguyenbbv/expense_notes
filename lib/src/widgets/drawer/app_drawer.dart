@@ -1,5 +1,6 @@
 import 'package:expense_notes/src/screens/home.dart';
 import 'package:expense_notes/src/screens/settings.dart';
+import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -7,6 +8,8 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = AuthService().currentUser;
+
     return Drawer(
       child: ListView(padding: EdgeInsets.zero, children: [
         SizedBox(
@@ -15,10 +18,10 @@ class AppDrawer extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
-            child: const Center(
+            child: Center(
               child: Text(
-                'Expense Notes',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                'Hello ${currentUser?.email}',
+                style: const TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
           ),
