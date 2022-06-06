@@ -24,6 +24,8 @@ class _SignInState extends State<SignIn> {
   String? _emailErrorMsg;
   String? _passwordErrorMsg;
 
+  bool isLoading = false;
+
   @override
   void dispose() {
     emailController.dispose();
@@ -50,56 +52,82 @@ class _SignInState extends State<SignIn> {
     final passwordField = TextFormField(
       style: const TextStyle(fontSize: 20.0),
       decoration: InputDecoration(
-          contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Password",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-          errorText: _passwordErrorMsg),
+        contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        hintText: "Password",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        errorText: _passwordErrorMsg,
+      ),
       controller: passwordController,
       obscureText: true,
       validator: (value) => _validateRequired(value),
     );
 
-    final loginButton = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Theme.of(context).primaryColor,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            setState(() {
-              _emailErrorMsg = null;
-              _passwordErrorMsg = null;
-            });
-            var result = await AuthService()
-                .signIn(emailController.text, passwordController.text);
+    final loginButton = ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          shape: const StadiumBorder(),
+          padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          minimumSize: Size(MediaQuery.of(context).size.width, 40)),
+      onPressed: () async {
+        if (isLoading) {
+          return;
+        }
 
-            if (result == null) {
-              Navigator.pushReplacementNamed(context, Home.routeName);
+        if (_formKey.currentState!.validate()) {
+          setState(() {
+            _emailErrorMsg = null;
+            _passwordErrorMsg = null;
+            isLoading = true;
+          });
+
+          var result = await AuthService()
+              .signIn(emailController.text, passwordController.text);
+
+          setState(() {
+            isLoading = false;
+          });
+
+          if (result == null) {
+            Navigator.pushReplacementNamed(context, Home.routeName);
+          } else {
+            if (result['message'] != null) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(result['message'].toString()),
+                backgroundColor: Colors.red,
+              ));
             } else {
-              if (result['message'] != null) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(result['message'].toString()),
-                  backgroundColor: Colors.red,
-                ));
-              } else {
-                setState(() {
-                  _emailErrorMsg = result['email'];
-                  _passwordErrorMsg = result['password'];
-                });
-              }
+              setState(() {
+                _emailErrorMsg = result['email'];
+                _passwordErrorMsg = result['password'];
+              });
             }
           }
-        },
-        child: const Text(
-          "Login",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-        ),
-      ),
+        }
+      },
+      child: !isLoading
+          ? const Text(
+              "Login",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                CircularProgressIndicator(color: Colors.white),
+                SizedBox(width: 24),
+                Text(
+                  'Please wait...',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                )
+              ],
+            ),
     );
 
     final register = Row(
@@ -120,37 +148,34 @@ class _SignInState extends State<SignIn> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          child: Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(36.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 155.0,
-                      child: Image.asset(
-                        "assets/images/logo.jpg",
-                        fit: BoxFit.contain,
-                      ),
+          child: Padding(
+            padding: const EdgeInsets.all(36.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 155.0,
+                    child: Image.asset(
+                      "assets/images/logo.jpg",
+                      fit: BoxFit.contain,
                     ),
-                    const SizedBox(height: 45.0),
-                    emailField,
-                    const SizedBox(height: 25.0),
-                    passwordField,
-                    const SizedBox(
-                      height: 35.0,
-                    ),
-                    loginButton,
-                    const SizedBox(
-                      height: 15.0,
-                    ),
-                    register
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 45.0),
+                  emailField,
+                  const SizedBox(height: 25.0),
+                  passwordField,
+                  const SizedBox(
+                    height: 35.0,
+                  ),
+                  loginButton,
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  register
+                ],
               ),
             ),
           ),

@@ -38,6 +38,9 @@ class MyApp extends StatelessWidget {
               themeMode: model.mode,
               theme: AppThemeData.lightTheme,
               darkTheme: AppThemeData.darkTheme,
+              initialRoute: AuthService().currentUser != null
+                  ? SignIn.routeName
+                  : Home.routeName,
               routes: {
                 Home.routeName: (context) => const Home(),
                 Settings.routeName: (context) => const Settings(),

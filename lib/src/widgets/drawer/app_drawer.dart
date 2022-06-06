@@ -11,45 +11,46 @@ class AppDrawer extends StatelessWidget {
     final currentUser = AuthService().currentUser;
 
     return Drawer(
-      child: ListView(padding: EdgeInsets.zero, children: [
-        SizedBox(
-          height: 120,
-          child: DrawerHeader(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DrawerHeader(
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
             child: Center(
               child: Text(
-                'Hello ${currentUser?.email}',
+                'Hello, ${currentUser?.email}',
                 style: const TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
           ),
-        ),
-        ListTile(
+          ListTile(
+              title: const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Home',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              onTap: () {
+                Navigator.pushReplacementNamed(context, Home.routeName);
+              }),
+          ListTile(
             title: const Align(
               alignment: Alignment.center,
               child: Text(
-                'Home',
+                'Settings',
                 style: TextStyle(fontSize: 16),
               ),
             ),
             onTap: () {
-              Navigator.pushReplacementNamed(context, Home.routeName);
-            }),
-        ListTile(
-          title: const Align(
-            alignment: Alignment.center,
-            child: Text(
-              'Settings',
-              style: TextStyle(fontSize: 16),
-            ),
+              Navigator.pushReplacementNamed(context, Settings.routeName);
+            },
           ),
-          onTap: () {
-            Navigator.pushReplacementNamed(context, Settings.routeName);
-          },
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
