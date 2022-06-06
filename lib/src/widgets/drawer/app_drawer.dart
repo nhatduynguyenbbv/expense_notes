@@ -2,13 +2,14 @@ import 'package:expense_notes/src/screens/home.dart';
 import 'package:expense_notes/src/screens/settings.dart';
 import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = AuthService().currentUser;
+    final currentUser = context.read<AuthService>().currentUser;
 
     return Drawer(
       child: Column(

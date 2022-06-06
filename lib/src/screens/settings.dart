@@ -5,8 +5,6 @@ import 'package:expense_notes/src/widgets/drawer/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'home.dart';
-
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
 
@@ -85,8 +83,7 @@ class _SettingsState extends State<Settings> {
                   IconButton(
                     icon: const Icon(Icons.logout),
                     onPressed: () async {
-                      await AuthService().signOut();
-                      Navigator.pushReplacementNamed(context, SignIn.routeName);
+                      await context.read<AuthService>().signOut();
                     },
                   ),
                 ],

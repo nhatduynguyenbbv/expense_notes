@@ -1,6 +1,7 @@
 import 'package:expense_notes/src/screens/sign_in.dart';
 import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignUp extends StatefulWidget {
   static const routeName = '/sign-up';
@@ -94,8 +95,10 @@ class _SignUpState extends State<SignUp> {
             _passwordErrorMsg = null;
             isLoading = true;
           });
-          var result = await AuthService().registerNewAccount(
-              emailController.text, passwordController.text);
+          var result = await await context
+              .read<AuthService>()
+              .registerNewAccount(
+                  emailController.text, passwordController.text);
 
           setState(() {
             isLoading = false;
@@ -106,7 +109,6 @@ class _SignUpState extends State<SignUp> {
               content: Text('Your account has been created.'),
               backgroundColor: Colors.green,
             ));
-            Navigator.pushReplacementNamed(context, SignIn.routeName);
           } else {
             if (result['message'] != null) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(

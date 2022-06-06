@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-class AuthService {
+class AuthService with ChangeNotifier {
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
-  }
-
-  Stream<User?> getCurrentUser() {
-    return FirebaseAuth.instance.authStateChanges();
+    notifyListeners();
   }
 
   Future<Map<String, String>?> registerNewAccount(
@@ -14,6 +12,7 @@ class AuthService {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+      notifyListeners();
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
@@ -34,6 +33,7 @@ class AuthService {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      notifyListeners();
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':

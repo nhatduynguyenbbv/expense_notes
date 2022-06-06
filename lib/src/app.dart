@@ -28,42 +28,33 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ThemeModel(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => AuthService(),
+        ),
       ],
       builder: (context, child) => FutureBuilder(
         future: context.read<ThemeModel>().loadThemeMode(),
-        builder: (context, snapshot) => Consumer<ThemeModel>(
-          builder: (_, model, __) {
+        builder: (context, snapshot) =>
+            Consumer2<AuthService, ThemeModel>(builder: (_, auth, theme, __) {
+          if (snapshot.connectionState == ConnectionState.done) {
             return MaterialApp(
               title: 'Expense Notes',
-              themeMode: model.mode,
+              themeMode: theme.mode,
               theme: AppThemeData.lightTheme,
               darkTheme: AppThemeData.darkTheme,
-              initialRoute: AuthService().currentUser != null
-                  ? SignIn.routeName
-                  : Home.routeName,
               routes: {
-                Home.routeName: (context) => const Home(),
                 Settings.routeName: (context) => const Settings(),
                 TransactionDetail.routeName: (context) =>
                     const TransactionDetail(),
-                SignIn.routeName: (context) => const SignIn(),
                 SignUp.routeName: (context) => const SignUp(),
               },
-              home: StreamBuilder(
-                stream: AuthService().getCurrentUser(),
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.active) {
-                    return snapshot.data != null
-                        ? const Home()
-                        : const SignIn();
-                  } else {
-                    return Container(color: Colors.white);
-                  }
-                },
-              ),
+              home: auth.currentUser != null ? const Home() : const SignIn(),
             );
-          },
-        ),
+          }
+
+          // Slash
+          return Container(color: Colors.white);
+        }),
       ),
     );
   }

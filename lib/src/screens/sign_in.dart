@@ -1,12 +1,9 @@
 import 'package:expense_notes/src/screens/sign_up.dart';
 import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:flutter/material.dart';
-
-import 'home.dart';
+import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
-  static const routeName = '/sign-in';
-
   const SignIn({
     Key? key,
   }) : super(key: key);
@@ -81,16 +78,15 @@ class _SignInState extends State<SignIn> {
             isLoading = true;
           });
 
-          var result = await AuthService()
+          var result = await context
+              .read<AuthService>()
               .signIn(emailController.text, passwordController.text);
 
           setState(() {
             isLoading = false;
           });
 
-          if (result == null) {
-            Navigator.pushReplacementNamed(context, Home.routeName);
-          } else {
+          if (result != null) {
             if (result['message'] != null) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(result['message'].toString()),
