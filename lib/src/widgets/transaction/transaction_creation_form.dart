@@ -1,12 +1,15 @@
-import 'package:expense_notes/src/models/transaction.dart';
+import 'package:expense_notes/src/models/app_model.dart';
+import 'package:expense_notes/src/models/transaction_model.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
+import 'package:expense_notes/src/utilizes/date.util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class TransactionCreationForm extends StatefulWidget {
-  const TransactionCreationForm({Key? key}) : super(key: key);
+  const TransactionCreationForm({Key? key, this.item}) : super(key: key);
+
+  final TransactionItem? item;
 
   @override
   TransactionCreationFormState createState() {
@@ -21,8 +24,19 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
   TextEditingController amountEditingController = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
-  TextEditingController dateEditingController = TextEditingController(
-      text: DateFormat('MMM d, yyyy').format(DateTime.now()));
+  TextEditingController dateEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    nameEditingController.text = widget.item?.name ?? "";
+    amountEditingController.text = widget.item?.cost.toString() ?? "";
+    dateEditingController.text =
+        widget.item?.date.toDateString() ?? DateTime.now().toDateString();
+
+    selectedDate = widget.item?.date ?? DateTime.now();
+  }
 
   @override
   void dispose() {
@@ -85,7 +99,6 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
                       child: TextFormField(
                         controller: dateEditingController,
                         keyboardType: TextInputType.datetime,
-                        style: const TextStyle(color: Colors.blue),
                         readOnly: true,
                         decoration: InputDecoration(
                           labelText: 'Date',
@@ -105,8 +118,11 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
               ]),
         ),
         ElevatedButton(
-          onPressed: () => _save(),
-          child: const Text('ADD'),
+          onPressed: () async => widget.item == null
+              ? await _add()
+              : await _edit(widget.item?.id ?? ''),
+          child: Text(widget.item != null ? 'EDIT' : 'ADD',
+              style: const TextStyle(color: Colors.white)),
         ),
       ],
     );
@@ -117,24 +133,36 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(2019, 8),
-        lastDate: DateTime(2100));
+        lastDate: DateTime.now());
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        var format = DateFormat('MMM d, yyyy');
-        var dateString = format.format(selectedDate);
-        dateEditingController.text = dateString;
+        dateEditingController.text = selectedDate.toDateString();
       });
     }
   }
 
-  void _save() {
+  Future<void> _add() async {
     if (_formKey.currentState!.validate()) {
-      context.read<TransactionModel>().add(TransactionItem(
-          int.parse(amountEditingController.text),
-          nameEditingController.text,
-          selectedDate));
+      context.read<AppModel>().setLoading(true);
+      await context.read<TransactionModel>().add(TransactionItem(
+          cost: int.parse(amountEditingController.text),
+          name: nameEditingController.text,
+          date: selectedDate));
+      context.read<AppModel>().setLoading(false);
+      Navigator.pop(context);
+    }
+  }
 
+  Future<void> _edit(String id) async {
+    if (_formKey.currentState!.validate()) {
+      context.read<AppModel>().setLoading(true);
+      await context.read<TransactionModel>().edit(TransactionItem(
+          id: id,
+          cost: int.parse(amountEditingController.text),
+          name: nameEditingController.text,
+          date: selectedDate));
+      context.read<AppModel>().setLoading(false);
       Navigator.pop(context);
     }
   }
