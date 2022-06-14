@@ -1,7 +1,6 @@
-import 'package:expense_notes/src/screens/sign_in.dart';
 import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignUp extends StatefulWidget {
   static const routeName = '/sign-up';
@@ -95,8 +94,7 @@ class _SignUpState extends State<SignUp> {
             _passwordErrorMsg = null;
             isLoading = true;
           });
-          var result = await await context
-              .read<AuthService>()
+          var result = await BlocProvider.of<AuthService>(context)
               .registerNewAccount(
                   emailController.text, passwordController.text);
 

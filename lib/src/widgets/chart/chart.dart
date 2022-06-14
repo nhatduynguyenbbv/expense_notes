@@ -4,15 +4,15 @@ import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:expense_notes/src/utilizes/date.util.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class Chart extends StatelessWidget {
   const Chart({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<TransactionModel>();
+    final model = BlocProvider.of<TransactionModel>(context, listen: true);
     final today = DateTime.now();
     final weekDays = [
       today.add(const Duration(days: -6)).toDateString("EEE"),
@@ -38,7 +38,7 @@ class Chart extends StatelessWidget {
           barRods: [
             BarChartRodData(
                 toY: tranIdx < 0
-                    ? 0
+                    ? 0.toDouble()
                     : transactionsByDays[tranIdx].cost.toDouble(),
                 width: 10,
                 color: Colors.amber)
@@ -47,7 +47,7 @@ class Chart extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: model.transactions.toList().isNotEmpty
+      child: model.transactions.isNotEmpty
           ? Column(
               children: <Widget>[
                 Text(
@@ -79,7 +79,8 @@ class Chart extends StatelessWidget {
                           ),
                           leftTitles: AxisTitles(
                               sideTitles: SideTitles(
-                            showTitles: true,
+                            showTitles:
+                                transactionsByDays.isEmpty ? false : true,
                             reservedSize: 40,
                             getTitlesWidget: (double value, TitleMeta meta) =>
                                 Text(

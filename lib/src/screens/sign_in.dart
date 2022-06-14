@@ -1,7 +1,7 @@
 import 'package:expense_notes/src/screens/sign_up.dart';
 import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({
@@ -78,8 +78,7 @@ class _SignInState extends State<SignIn> {
             isLoading = true;
           });
 
-          var result = await context
-              .read<AuthService>()
+          var result = await BlocProvider.of<AuthService>(context)
               .signIn(emailController.text, passwordController.text);
 
           setState(() {

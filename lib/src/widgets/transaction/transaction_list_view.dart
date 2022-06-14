@@ -5,7 +5,7 @@ import 'package:expense_notes/src/utilizes/modal-bottom-sheet.dart';
 import 'package:expense_notes/src/widgets/transaction/transaction_creation_form.dart';
 import 'package:expense_notes/src/widgets/transaction/transaction_list_item.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TransactionListView extends StatelessWidget {
   const TransactionListView({Key? key}) : super(key: key);
@@ -13,19 +13,19 @@ class TransactionListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-        future: context.read<TransactionModel>().fetch(),
+        future: BlocProvider.of<TransactionModel>(context).fetch(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            context.read<AppModel>().setLoading(false);
+            BlocProvider.of<AppModel>(context).setLoading(false);
           } else {
-            context.read<AppModel>().setLoading(true);
+            BlocProvider.of<AppModel>(context).setLoading(true);
           }
 
-          return Consumer<TransactionModel>(
-            builder: (context, model, child) => Expanded(
-              child: model.transactions.isNotEmpty
+          return BlocBuilder<TransactionModel, List<TransactionItem>>(
+            builder: (context, transactions) => Expanded(
+              child: transactions.isNotEmpty
                   ? ListView(
-                      children: model.transactions
+                      children: transactions
                           .map((transaction) =>
                               _transactionItemBuilder(context, transaction))
                           .toList())
@@ -48,7 +48,7 @@ class TransactionListView extends StatelessWidget {
         key: Key(item.id.toString()),
         item: item,
         onDelete: (item) async =>
-            {await context.read<TransactionModel>().remove(item)},
+            {await BlocProvider.of<TransactionModel>(context).remove(item)},
         onEdit: (item) => showCustomModalBottomSheet(
               title: "Edit Transaction",
               context: context,

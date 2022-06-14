@@ -2,14 +2,14 @@ import 'package:expense_notes/src/screens/home.dart';
 import 'package:expense_notes/src/screens/settings.dart';
 import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = context.read<AuthService>().currentUser;
+    final currentUser = BlocProvider.of<AuthService>(context).currentUser;
 
     return Drawer(
       child: Column(

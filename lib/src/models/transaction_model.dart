@@ -2,12 +2,14 @@ import 'dart:collection';
 
 import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:expense_notes/src/services/api_service.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TransactionModel extends ChangeNotifier {
+class TransactionModel extends Cubit<List<TransactionItem>> {
   final ApiService api = ApiService(DataProvider.http, "transactions");
 
   late List<TransactionItem> _transactions = [];
+
+  TransactionModel() : super([]);
 
   UnmodifiableListView<TransactionItem> get transactions =>
       UnmodifiableListView(_transactions);
@@ -19,7 +21,7 @@ class TransactionModel extends ChangeNotifier {
         .map((doc) => TransactionItem.fromMap(doc.value as Map, doc.key))
         .toList();
 
-    notifyListeners();
+    emit(transactions);
   }
 
   Future<void> add(TransactionItem item) async {
@@ -29,7 +31,7 @@ class TransactionModel extends ChangeNotifier {
 
     _transactions.add(newTran);
 
-    notifyListeners();
+    emit(transactions);
   }
 
   Future<void> edit(TransactionItem item) async {
@@ -38,7 +40,7 @@ class TransactionModel extends ChangeNotifier {
       await api.update(item.toJson(), item.id.toString());
       _transactions[transactionIdx] = item;
 
-      notifyListeners();
+      emit(transactions);
     }
   }
 
@@ -46,6 +48,6 @@ class TransactionModel extends ChangeNotifier {
     await api.remove(item.id.toString());
     _transactions.remove(item);
 
-    notifyListeners();
+    emit(transactions);
   }
 }

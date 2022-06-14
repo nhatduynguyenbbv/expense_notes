@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AppModel extends ChangeNotifier {
+class AppModel extends Cubit<bool> {
   late bool _isLoading = false;
+
+  AppModel(bool initialState) : super(initialState);
 
   bool get isLoading => _isLoading;
 
@@ -16,6 +18,6 @@ class AppModel extends ChangeNotifier {
   _setLoading(bool loading) {
     _isLoading = loading;
 
-    notifyListeners();
+    emit(isLoading);
   }
 }

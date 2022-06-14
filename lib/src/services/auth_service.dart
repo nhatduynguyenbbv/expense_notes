@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AuthService with ChangeNotifier {
+class AuthService extends Cubit<User?> {
+  AuthService({User? initialState}) : super(initialState);
+
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
-    notifyListeners();
+    emit(currentUser);
   }
 
   Future<Map<String, String>?> registerNewAccount(
@@ -12,7 +14,7 @@ class AuthService with ChangeNotifier {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      notifyListeners();
+      emit(currentUser);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
@@ -33,7 +35,7 @@ class AuthService with ChangeNotifier {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      notifyListeners();
+      emit(currentUser);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':

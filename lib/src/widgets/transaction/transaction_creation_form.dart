@@ -4,7 +4,7 @@ import 'package:expense_notes/src/models/transaction_item.dart';
 import 'package:expense_notes/src/utilizes/date.util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TransactionCreationForm extends StatefulWidget {
   const TransactionCreationForm({Key? key, this.item}) : super(key: key);
@@ -144,25 +144,25 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
 
   Future<void> _add() async {
     if (_formKey.currentState!.validate()) {
-      context.read<AppModel>().setLoading(true);
-      await context.read<TransactionModel>().add(TransactionItem(
+      BlocProvider.of<AppModel>(context).setLoading(true);
+      await BlocProvider.of<TransactionModel>(context).add(TransactionItem(
           cost: int.parse(amountEditingController.text),
           name: nameEditingController.text,
           date: selectedDate));
-      context.read<AppModel>().setLoading(false);
+      BlocProvider.of<AppModel>(context).setLoading(false);
       Navigator.pop(context);
     }
   }
 
   Future<void> _edit(String id) async {
     if (_formKey.currentState!.validate()) {
-      context.read<AppModel>().setLoading(true);
-      await context.read<TransactionModel>().edit(TransactionItem(
+      BlocProvider.of<AppModel>(context).setLoading(true);
+      await BlocProvider.of<TransactionModel>(context).edit(TransactionItem(
           id: id,
           cost: int.parse(amountEditingController.text),
           name: nameEditingController.text,
           date: selectedDate));
-      context.read<AppModel>().setLoading(false);
+      BlocProvider.of<AppModel>(context).setLoading(false);
       Navigator.pop(context);
     }
   }

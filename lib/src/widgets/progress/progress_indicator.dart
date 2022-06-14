@@ -1,6 +1,6 @@
 import 'package:expense_notes/src/models/app_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppLinearProgressIndicator extends StatefulWidget
     with PreferredSizeWidget {
@@ -43,8 +43,8 @@ class _AppLinearProgressIndicatorState extends State<AppLinearProgressIndicator>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppModel>(
-      builder: (context, model, child) => model.isLoading
+    return BlocBuilder<AppModel, bool>(
+      builder: (context, isLoading) => isLoading
           ? LinearProgressIndicator(
               backgroundColor: Colors.amber,
               value: controller.value,

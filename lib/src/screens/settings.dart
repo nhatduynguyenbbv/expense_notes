@@ -3,7 +3,7 @@ import 'package:expense_notes/src/screens/sign_in.dart';
 import 'package:expense_notes/src/services/auth_service.dart';
 import 'package:expense_notes/src/widgets/drawer/app_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Expense Notes')),
-      body: Consumer<ThemeModel>(builder: (_, model, __) {
+      body: BlocBuilder<ThemeModel, ThemeMode>(builder: (_, mode) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -54,7 +54,7 @@ class _SettingsState extends State<Settings> {
                             ],
                           ),
                           DropdownButton<ThemeMode>(
-                            value: model.mode,
+                            value: mode,
                             items: themeModes
                                 .map((value) => DropdownMenuItem<ThemeMode>(
                                       value: value,
@@ -63,7 +63,8 @@ class _SettingsState extends State<Settings> {
                                     ))
                                 .toList(),
                             onChanged: (ThemeMode? value) async {
-                              await model.updateThemeMode(value);
+                              await BlocProvider.of<ThemeModel>(context)
+                                  .updateThemeMode(value);
                             },
                           ),
                         ],
@@ -83,7 +84,7 @@ class _SettingsState extends State<Settings> {
                   IconButton(
                     icon: const Icon(Icons.logout),
                     onPressed: () async {
-                      await context.read<AuthService>().signOut();
+                      await BlocProvider.of<AuthService>(context).signOut();
                     },
                   ),
                 ],
