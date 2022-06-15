@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/transactions/transaction_bloc.dart';
+import 'bloc/transactions/transaction_event.dart';
 import 'models/theme_model.dart';
 import 'models/transaction_model.dart';
 import 'screens/home.dart';
@@ -36,6 +38,9 @@ class MyApp extends StatelessWidget {
           lazy: false,
           create: (context) => AuthService(),
         ),
+        BlocProvider(
+          create: (context) => TransactionBloc()..add(const TransactionFetch()),
+        )
       ],
       child: BlocBuilder<AuthService, User?>(
         builder: (context, user) {

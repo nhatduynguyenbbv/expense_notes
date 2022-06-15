@@ -1,3 +1,5 @@
+import 'package:expense_notes/src/bloc/transactions/transaction_bloc.dart';
+import 'package:expense_notes/src/bloc/transactions/transaction_event.dart';
 import 'package:expense_notes/src/models/app_model.dart';
 import 'package:expense_notes/src/models/transaction_model.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
@@ -118,9 +120,8 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
               ]),
         ),
         ElevatedButton(
-          onPressed: () async => widget.item == null
-              ? await _add()
-              : await _edit(widget.item?.id ?? ''),
+          onPressed: () =>
+              widget.item == null ? _add() : _edit(widget.item?.id ?? ''),
           child: Text(widget.item != null ? 'EDIT' : 'ADD',
               style: const TextStyle(color: Colors.white)),
         ),
@@ -142,26 +143,29 @@ class TransactionCreationFormState extends State<TransactionCreationForm> {
     }
   }
 
-  Future<void> _add() async {
+  void _add() {
     if (_formKey.currentState!.validate()) {
       BlocProvider.of<AppModel>(context).setLoading(true);
-      await BlocProvider.of<TransactionModel>(context).add(TransactionItem(
+      final newItem = TransactionItem(
           cost: int.parse(amountEditingController.text),
           name: nameEditingController.text,
-          date: selectedDate));
+          date: selectedDate);
+      BlocProvider.of<TransactionBloc>(context)
+          .add(TransactionAdd(item: newItem));
       BlocProvider.of<AppModel>(context).setLoading(false);
       Navigator.pop(context);
     }
   }
 
-  Future<void> _edit(String id) async {
+  void _edit(String id) {
     if (_formKey.currentState!.validate()) {
       BlocProvider.of<AppModel>(context).setLoading(true);
-      await BlocProvider.of<TransactionModel>(context).edit(TransactionItem(
-          id: id,
-          cost: int.parse(amountEditingController.text),
-          name: nameEditingController.text,
-          date: selectedDate));
+      BlocProvider.of<TransactionBloc>(context).add(TransactionEdit(
+          item: TransactionItem(
+              id: id,
+              cost: int.parse(amountEditingController.text),
+              name: nameEditingController.text,
+              date: selectedDate)));
       BlocProvider.of<AppModel>(context).setLoading(false);
       Navigator.pop(context);
     }

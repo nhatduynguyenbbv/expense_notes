@@ -1,3 +1,4 @@
+import 'package:expense_notes/src/bloc/transactions/transaction_bloc.dart';
 import 'package:expense_notes/src/models/transaction_model.dart';
 import 'package:expense_notes/src/models/transaction_data.dart';
 import 'package:expense_notes/src/models/transaction_item.dart';
@@ -12,7 +13,7 @@ class Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = BlocProvider.of<TransactionModel>(context, listen: true);
+    final model = BlocProvider.of<TransactionBloc>(context, listen: true);
     final today = DateTime.now();
     final weekDays = [
       today.add(const Duration(days: -6)).toDateString("EEE"),
@@ -24,7 +25,7 @@ class Chart extends StatelessWidget {
       today.toDateString("EEE")
     ];
     final transactionsByDays =
-        _groupTransactionsByDate(model.transactions.toList());
+        _groupTransactionsByDate(model.state.transactions.toList());
 
     final barGroups = weekDays.map((day) {
       var tranIdx = transactionsByDays
@@ -47,7 +48,7 @@ class Chart extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: model.transactions.isNotEmpty
+      child: model.state.transactions.isNotEmpty
           ? Column(
               children: <Widget>[
                 Text(
